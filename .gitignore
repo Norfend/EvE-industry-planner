@@ -5,6 +5,7 @@
 /httpRequests/
 # Datasource local storage ignored files
 **/target/**
+**/output/**
 /dataSources/
 /dataSources.local.xml
 /.idea/

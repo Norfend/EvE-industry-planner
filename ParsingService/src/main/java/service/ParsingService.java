@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Here are the number of groups that I want to parse from files:
@@ -26,18 +27,17 @@ import java.util.Map;
  */
 public class ParsingService {
     private final String filePath;
-    private final Map<Integer, Type> materials_after_reprocessing;
-    private final Map<Integer, Type> raw_resources;
-    private final Map<Integer, ReprocessingBlueprint> reprocessing_blueprints;
+    private final Map<Integer, Type> materialsAfterReprocessing;
+    private final Map<Integer, Type> rawResources;
+    private final Map<Integer, ReprocessingBlueprint> reprocessingBlueprints;
 
     /**
      * @param filePath Path to the folder where the '*.yaml' files are located.
      */
     public ParsingService(String filePath) {
         this.filePath = filePath;
-        this.materials_after_reprocessing = new HashMap<>();
-        this.raw_resources = new HashMap<>();
-        this.reprocessing_blueprints = this.parseReprocessingBlueprints();
+        this.materialsAfterReprocessing = new HashMap<>();
+        this.rawResources = new HashMap<>();
         Map<Integer, Type> types = this.parseTypes();
         Map<Integer, MarketGroup> marketGroups = this.parseMarketGroups();
         types.forEach((key, value) -> {
@@ -46,7 +46,7 @@ public class ParsingService {
                         || value.getMarketGroupID() == 1033
                         || value.getMarketGroupID() == 501)
                         && (key != 76374 && key != 48927)) {
-                    materials_after_reprocessing.put(key, value);
+                    materialsAfterReprocessing.put(key, value);
                 }
                 else if (marketGroups.get(value.getMarketGroupID()) != null
                         && (marketGroups.get(value.getMarketGroupID()).getParentGroupID() == 2395
@@ -54,10 +54,14 @@ public class ParsingService {
                         || value.getMarketGroupID() == 1856
                         || value.getMarketGroupID() == 1855)
                         && (key != 60771 && key != 49787)) {
-                    raw_resources.put(key, value);
+                    rawResources.put(key, value);
                 }
             }
         });
+        this.reprocessingBlueprints = this.parseReprocessingBlueprints().entrySet()
+                .stream()
+                .filter(entry -> rawResources.containsKey(entry.getKey()))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
     /**
@@ -119,11 +123,15 @@ public class ParsingService {
         return reprocessingBlueprints;
     }
 
-    public Map<Integer, Type> getMaterials_after_reprocessing() {
-        return materials_after_reprocessing;
+    public Map<Integer, Type> getMaterialsAfterReprocessing() {
+        return materialsAfterReprocessing;
     }
 
-    public Map<Integer, Type> getRaw_resources() {
-        return raw_resources;
+    public Map<Integer, Type> getRawResources() {
+        return rawResources;
+    }
+
+    public Map<Integer, ReprocessingBlueprint> getReprocessingBlueprints() {
+        return reprocessingBlueprints;
     }
 }
