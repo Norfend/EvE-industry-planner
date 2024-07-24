@@ -1,6 +1,8 @@
 package SettingsService.service;
 
+import SettingsService.model.MaterialsAfterReprocessing;
 import SettingsService.model.RawResources;
+import SettingsService.repository.MaterialsAfterReprocessingRepository;
 import SettingsService.repository.RawResourcesRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,10 +16,13 @@ import java.util.List;
 @Service
 public class FileParser {
     private final RawResourcesRepository rawResourcesRepository;
+    private final MaterialsAfterReprocessingRepository materialsAfterReprocessingRepository;
 
     @Autowired
-    public FileParser(RawResourcesRepository rawResourcesRepository) {
+    public FileParser(RawResourcesRepository rawResourcesRepository,
+                      MaterialsAfterReprocessingRepository materialsAfterReprocessingRepository) {
         this.rawResourcesRepository = rawResourcesRepository;
+        this.materialsAfterReprocessingRepository = materialsAfterReprocessingRepository;
     }
 
     /**
@@ -41,7 +46,26 @@ public class FileParser {
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
-        rawResourcesRepository.saveAll(rawResources);
-        return rawResources;
+        return rawResourcesRepository.saveAll(rawResources);
+    }
+
+    public List<MaterialsAfterReprocessing> parseMaterialsAfterReprocessingFile(MultipartFile file) {
+        List<MaterialsAfterReprocessing> materialsAfterReprocessing = new LinkedList<>();
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            JsonNode jsonNode = objectMapper.readTree(file.getInputStream());
+            jsonNode.fields().forEachRemaining(entry -> {
+                int iconID = entry.getValue().get("iconID").asInt();
+                JsonNode name = entry.getValue().get("name");
+                String materialsAfterReprocessingName = name.get("en").asText();
+                materialsAfterReprocessing.add(new MaterialsAfterReprocessing(
+                        Long.parseLong(entry.getKey()),
+                        iconID,
+                        materialsAfterReprocessingName));
+            });
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+        return materialsAfterReprocessingRepository.saveAll(materialsAfterReprocessing);
     }
 }

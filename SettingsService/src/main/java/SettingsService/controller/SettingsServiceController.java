@@ -1,5 +1,6 @@
 package SettingsService.controller;
 
+import SettingsService.model.MaterialsAfterReprocessing;
 import SettingsService.model.RawResources;
 import SettingsService.service.FileParser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,13 @@ public class SettingsServiceController {
     }
 
     @PostMapping(path = "/raw-resources", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<List<RawResources>> getSettings(@RequestPart("file") MultipartFile file) {
+    public ResponseEntity<List<RawResources>> setRawResources(@RequestPart("file") MultipartFile file) {
         return ResponseEntity.ok().body(fileParser.parseRawResourcesFile(file));
+    }
+
+    @PostMapping(path = "/materials-after-reprocessing", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<List<MaterialsAfterReprocessing>> setMaterialsAfterReprocessing
+            (@RequestPart("file") MultipartFile file) {
+        return ResponseEntity.ok().body(fileParser.parseMaterialsAfterReprocessingFile(file));
     }
 }
