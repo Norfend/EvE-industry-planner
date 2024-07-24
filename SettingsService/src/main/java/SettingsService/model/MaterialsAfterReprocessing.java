@@ -2,6 +2,7 @@ package SettingsService.model;
 
 import jakarta.persistence.*;
 
+
 @Entity
 @Table(name = "\"materials after reprocessing\"",
         uniqueConstraints = {
@@ -22,8 +23,10 @@ public class MaterialsAfterReprocessing {
     @Id
     @Column(name = "\"materials after reprocessing id\"")
     private Long MaterialsAfterReprocessingId;
+
     @Column(name = "\"materials after reprocessing icon id\"", nullable = false, unique = true)
     private int MaterialsAfterReprocessingIconID;
+
     @Column(name = "\"materials after reprocessing name\"", nullable = false, unique = true)
     private String MaterialsAfterReprocessingName;
 

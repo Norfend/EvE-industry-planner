@@ -2,6 +2,10 @@ package SettingsService.model;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
+
 @Entity
 @Table(name = "\"raw resources\"",
         uniqueConstraints = {
@@ -20,27 +24,25 @@ public class RawResources {
     @Id
     @Column(name = "\"raw resource id\"")
     private Long RawResourceId;
+
     @Column(name = "\"raw resource icon id\"", nullable = false)
     private int RawResourceIconID;
+
     @Column(name = "\"raw resource name\"", nullable = false, unique = true)
     private String RawResourceName;
+
     @Column(name = "\"raw resource portion size\"", nullable = false)
     private int RawResourcePortionSize;
 
-    public Long getRawResourceId() {
-        return RawResourceId;
+    @OneToMany(mappedBy = "rawResourceId", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<ReprocessingBlueprint> reprocessingBlueprint = new HashSet<>();
+
+    public int getRawResourcePortionSize() {
+        return RawResourcePortionSize;
     }
 
-    public void setRawResourceId(Long rawResourceId) {
-        RawResourceId = rawResourceId;
-    }
-
-    public int getRawResourceIconID() {
-        return RawResourceIconID;
-    }
-
-    public void setRawResourceIconID(int rawResourceIconID) {
-        RawResourceIconID = rawResourceIconID;
+    public void setRawResourcePortionSize(int rawResourcePortionSize) {
+        RawResourcePortionSize = rawResourcePortionSize;
     }
 
     public String getRawResourceName() {
@@ -51,11 +53,37 @@ public class RawResources {
         RawResourceName = rawResourceName;
     }
 
-    public int getRawResourcePortionSize() {
-        return RawResourcePortionSize;
+    public int getRawResourceIconID() {
+        return RawResourceIconID;
     }
 
-    public void setRawResourcePortionSize(int rawResourcePortionSize) {
-        RawResourcePortionSize = rawResourcePortionSize;
+    public void setRawResourceIconID(int rawResourceIconID) {
+        RawResourceIconID = rawResourceIconID;
+    }
+
+    public Long getRawResourceId() {
+        return RawResourceId;
+    }
+
+    public void setRawResourceId(Long rawResourceId) {
+        RawResourceId = rawResourceId;
+    }
+
+    public Set<ReprocessingBlueprint> getReprocessingBlueprint() {
+        return reprocessingBlueprint;
+    }
+
+    public void setReprocessingBlueprint(Set<ReprocessingBlueprint> reprocessingBlueprint) {
+        this.reprocessingBlueprint = reprocessingBlueprint;
+    }
+
+    public void addResourceMaterial(ReprocessingBlueprint blueprint) {
+        reprocessingBlueprint.add(blueprint);
+        blueprint.setRawResourceId(this);
+    }
+
+    public void removeResourceMaterial(ReprocessingBlueprint blueprint) {
+        reprocessingBlueprint.remove(blueprint);
+        blueprint.setRawResourceId(null);
     }
 }
