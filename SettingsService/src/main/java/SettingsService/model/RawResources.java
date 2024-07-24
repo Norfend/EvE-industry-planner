@@ -2,10 +2,6 @@ package SettingsService.model;
 
 import jakarta.persistence.*;
 
-import java.util.HashSet;
-import java.util.Set;
-
-
 @Entity
 @Table(name = "\"raw resources\"",
         uniqueConstraints = {
@@ -14,7 +10,10 @@ public class RawResources {
     public RawResources() {
     }
 
-    public RawResources(int rawResourcePortionSize, String rawResourceName, int rawResourceIconID, Long rawResourceId) {
+    public RawResources(int rawResourcePortionSize,
+                        String rawResourceName,
+                        int rawResourceIconID,
+                        Long rawResourceId) {
         RawResourcePortionSize = rawResourcePortionSize;
         RawResourceName = rawResourceName;
         RawResourceIconID = rawResourceIconID;
@@ -33,9 +32,6 @@ public class RawResources {
 
     @Column(name = "\"raw resource portion size\"", nullable = false)
     private int RawResourcePortionSize;
-
-    @OneToMany(mappedBy = "rawResourceId", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<ReprocessingBlueprint> reprocessingBlueprint = new HashSet<>();
 
     public int getRawResourcePortionSize() {
         return RawResourcePortionSize;
@@ -67,23 +63,5 @@ public class RawResources {
 
     public void setRawResourceId(Long rawResourceId) {
         RawResourceId = rawResourceId;
-    }
-
-    public Set<ReprocessingBlueprint> getReprocessingBlueprint() {
-        return reprocessingBlueprint;
-    }
-
-    public void setReprocessingBlueprint(Set<ReprocessingBlueprint> reprocessingBlueprint) {
-        this.reprocessingBlueprint = reprocessingBlueprint;
-    }
-
-    public void addResourceMaterial(ReprocessingBlueprint blueprint) {
-        reprocessingBlueprint.add(blueprint);
-        blueprint.setRawResourceId(this);
-    }
-
-    public void removeResourceMaterial(ReprocessingBlueprint blueprint) {
-        reprocessingBlueprint.remove(blueprint);
-        blueprint.setRawResourceId(null);
     }
 }

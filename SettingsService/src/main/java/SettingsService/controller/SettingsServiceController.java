@@ -2,6 +2,7 @@ package SettingsService.controller;
 
 import SettingsService.model.MaterialsAfterReprocessing;
 import SettingsService.model.RawResources;
+import SettingsService.model.ReprocessingBlueprint;
 import SettingsService.service.FileParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -30,5 +31,11 @@ public class SettingsServiceController {
     public ResponseEntity<List<MaterialsAfterReprocessing>> setMaterialsAfterReprocessing
             (@RequestPart("file") MultipartFile file) {
         return ResponseEntity.ok().body(fileParser.parseMaterialsAfterReprocessingFile(file));
+    }
+
+    @PostMapping(path = "/reprocessing-blueprint", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public ResponseEntity<List<ReprocessingBlueprint>> setReprocessingBlueprint
+            (@RequestPart("file") MultipartFile file) {
+        return ResponseEntity.ok().body(fileParser.parseReprocessingBlueprintFile(file));
     }
 }

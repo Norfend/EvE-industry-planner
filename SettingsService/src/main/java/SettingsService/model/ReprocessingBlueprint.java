@@ -8,8 +8,9 @@ public class ReprocessingBlueprint {
     public ReprocessingBlueprint() {
     }
 
-    public ReprocessingBlueprint(Long reprocessingBlueprintId, RawResources rawResourceId, MaterialsAfterReprocessing materialAfterReprocessingId, int quantity) {
-        ReprocessingBlueprintId = reprocessingBlueprintId;
+    public ReprocessingBlueprint(RawResources rawResourceId,
+                                 MaterialsAfterReprocessing materialAfterReprocessingId,
+                                 int quantity) {
         this.rawResourceId = rawResourceId;
         MaterialAfterReprocessingId = materialAfterReprocessingId;
         this.quantity = quantity;
@@ -27,11 +28,17 @@ public class ReprocessingBlueprint {
     private Long ReprocessingBlueprintId;
 
     @ManyToOne
-    @JoinColumn(name = "\"raw resource id\"", nullable = false)
+    @JoinColumn(
+            name = "\"raw resource id\"",
+            nullable = false,
+            foreignKey = @ForeignKey(name = "\"raw resource FK\""))
     private RawResources rawResourceId;
 
     @ManyToOne
-    @JoinColumn(name = "\"materials after reprocessing id\"", nullable = false)
+    @JoinColumn(
+            name = "\"materials after reprocessing id\"",
+            nullable = false,
+            foreignKey = @ForeignKey(name = "\"materials after reprocessing FK\""))
     private MaterialsAfterReprocessing MaterialAfterReprocessingId;
 
     @Column(nullable = false)

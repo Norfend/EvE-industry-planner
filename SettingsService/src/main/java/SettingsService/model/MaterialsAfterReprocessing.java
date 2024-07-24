@@ -14,7 +14,9 @@ public class MaterialsAfterReprocessing {
     public MaterialsAfterReprocessing() {
     }
 
-    public MaterialsAfterReprocessing(Long materialsAfterReprocessingId, int materialsAfterReprocessingIconID, String materialsAfterReprocessingName) {
+    public MaterialsAfterReprocessing(Long materialsAfterReprocessingId,
+                                      int materialsAfterReprocessingIconID,
+                                      String materialsAfterReprocessingName) {
         MaterialsAfterReprocessingId = materialsAfterReprocessingId;
         MaterialsAfterReprocessingIconID = materialsAfterReprocessingIconID;
         MaterialsAfterReprocessingName = materialsAfterReprocessingName;
