@@ -53,7 +53,7 @@ public class ParsingService {
                         || marketGroups.get(value.getMarketGroupID()).getParentGroupID() == 54
                         || value.getMarketGroupID() == 1856
                         || value.getMarketGroupID() == 1855)
-                        && (key != 60771 && key != 49787)) {
+                        && (key != 60771 && key != 49787 && key != 76373)) {
                     rawResources.put(key, value);
                 }
             }

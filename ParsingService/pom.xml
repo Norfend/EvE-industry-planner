@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>ParsingService</artifactId>
-    <name>service.ParsingService</name>
+    <name>ParsingService</name>
 
     <dependencies>
         <!--Parsing dependencies-->
