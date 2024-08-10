@@ -1,5 +1,6 @@
 package RefineryService.service;
 
+import RefineryService.model.RawResources;
 import RefineryService.repository.RawResourcesRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,9 +27,11 @@ public class RefineryCalculator {
     public List<String> calculator(String inputLines) {
         List<Line> lines = inputLinesParser(inputLines);
         List<String> outputList = new LinkedList<>();
+        List<Optional<RawResources>> resources = new LinkedList<>();
         for (Line line : lines) {
-            if (rawResourcesRepository.findByRawResourceName(line.item).isPresent()) {
-                outputList.add(rawResourcesRepository.findByRawResourceName(line.item).get().getRawResourceName());
+            Optional<RawResources> resource = rawResourcesRepository.findByRawResourceName(line.item);
+            if (resource.isPresent()) {
+                resources.add(resource);
             }
         }
         return outputList;
