@@ -1,2 +1,2 @@
 # EvE-industry-planner
-Here I will try to make my own production calculator
+This branch will be used for development purposes
