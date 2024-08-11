@@ -1,22 +1,22 @@
 package RefineryService.service;
 
 import RefineryService.model.RawResources;
+import RefineryService.model.ReprocessingBlueprint;
 import RefineryService.repository.RawResourcesRepository;
+import RefineryService.repository.ReprocessingBlueprintRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
 public class RefineryCalculator {
     private final RawResourcesRepository rawResourcesRepository;
+    private final ReprocessingBlueprintRepository reprocessingBlueprintRepository;
 
     @Builder
     private static class Line {
@@ -24,15 +24,35 @@ public class RefineryCalculator {
         int quantity;
     }
 
+    /**
+     * Calculates the output materials after processing the input raw resources based on reprocessing blueprints.
+     *
+     * @param inputLines A string containing the input lines to be parsed and processed.
+     * @return A list of strings representing the output materials and their corresponding quantities.
+     *         If the input raw resource doesn't match any blueprint, it is skipped in the calculation.
+     */
     public List<String> calculator(String inputLines) {
         List<Line> lines = inputLinesParser(inputLines);
         List<String> outputList = new LinkedList<>();
-        List<Optional<RawResources>> resources = new LinkedList<>();
+        Map<String, Integer> materials = new HashMap<>();
         for (Line line : lines) {
             Optional<RawResources> resource = rawResourcesRepository.findByRawResourceName(line.item);
-            if (resource.isPresent()) {
-                resources.add(resource);
+            if (resource.isPresent() && resource.get().getRawResourcePortionSize() <= line.quantity) {
+                int numberOfPortions = line.quantity / resource.get().getRawResourcePortionSize();
+                List<ReprocessingBlueprint> reprocessingList = reprocessingBlueprintRepository
+                                            .findByRawResourceId(resource.get())
+                                            .orElseThrow();
+                for (ReprocessingBlueprint blueprint: reprocessingList) {
+                    String materialName = blueprint.getMaterialAfterReprocessingId().getMaterialsAfterReprocessingName();
+                    if (materials.putIfAbsent(materialName, blueprint.getQuantity() * numberOfPortions) != null) {
+                        materials.put(materialName, materials.get(materialName) +
+                                      blueprint.getQuantity() * numberOfPortions);
+                    }
+                }
             }
+        }
+        for (String material : materials.keySet()) {
+            outputList.add(material + " " + materials.get(material));
         }
         return outputList;
     }
@@ -59,5 +79,9 @@ public class RefineryCalculator {
             System.err.println(e.getMessage());
         }
         return outputLines;
+    }
+
+    private double getReprocessingRatio(String inputString) {
+        return 1.0;
     }
 }
