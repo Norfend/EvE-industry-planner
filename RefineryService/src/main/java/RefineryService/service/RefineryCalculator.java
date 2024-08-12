@@ -44,9 +44,11 @@ public class RefineryCalculator {
                                             .orElseThrow();
                 for (ReprocessingBlueprint blueprint: reprocessingList) {
                     String materialName = blueprint.getMaterialAfterReprocessingId().getMaterialsAfterReprocessingName();
-                    if (materials.putIfAbsent(materialName, blueprint.getQuantity() * numberOfPortions) != null) {
-                        materials.put(materialName, materials.get(materialName) +
-                                      blueprint.getQuantity() * numberOfPortions);
+                    double inputMaterialValue = materials.get(materialName) + blueprint.getQuantity() *
+                                                numberOfPortions *
+                                                getReprocessingRatio(materialName);
+                    if (materials.putIfAbsent(materialName, (int) inputMaterialValue) != null) {
+                        materials.put(materialName, (int) inputMaterialValue);
                     }
                 }
             }
