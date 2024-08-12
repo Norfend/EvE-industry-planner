@@ -44,11 +44,9 @@ public class RefineryCalculator {
                                             .orElseThrow();
                 for (ReprocessingBlueprint blueprint: reprocessingList) {
                     String materialName = blueprint.getMaterialAfterReprocessingId().getMaterialsAfterReprocessingName();
-                    double inputMaterialValue = materials.get(materialName) + blueprint.getQuantity() *
-                                                numberOfPortions *
-                                                getReprocessingRatio(materialName);
+                    double inputMaterialValue = blueprint.getQuantity() * numberOfPortions * getReprocessingRatio(materialName);
                     if (materials.putIfAbsent(materialName, (int) inputMaterialValue) != null) {
-                        materials.put(materialName, (int) inputMaterialValue);
+                        materials.put(materialName, (int) inputMaterialValue + materials.get(materialName));
                     }
                 }
             }
@@ -84,6 +82,11 @@ public class RefineryCalculator {
     }
 
     private double getReprocessingRatio(String inputString) {
-        return 1.0;
+        double baseYield = 0.5;
+        double characterYield = (1 + Constants.REPROCESSING_SKILL.getValue() * 0.03) *
+                                (1 + Constants.REPROCESSING_EFFICIENCY_SKILL.getValue() * 0.02) *
+                                (1 + Constants.ORE_PROCESSING_SKILL.getValue() * 0.02) *
+                                (1 + Constants.PROCESSING_IMPLANT.getValue());
+        return baseYield * characterYield;
     }
 }
