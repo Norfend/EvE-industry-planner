@@ -24,7 +24,15 @@ import java.util.stream.Collectors;
  *   <li>Moon Ores (parent group): 2395</li>
  *   <li>Standard Ores (parent group) 54</li>
  * </ul>
- */
+ * Here are the number of groups that I don't want to parse from files:
+ * <ul>
+ *   <li>Nephrite: 60771</li>
+ *   <li>Hiemal Tricarboxyl Vapor: 49787</li>
+ *   <li>Nesosilicate Rakovene: 76373</li>
+ *   <li>Neo-Jadarite: 76374</li>
+ *   <li>Chromodynamic Tricarboxyls: 48927</li>
+ *   <li>Ores with "Batch" in the name</li>
+ * </ul>*/
 public class ParsingService {
     private final String filePath;
     private final Map<Integer, Type> materialsAfterReprocessing;
@@ -53,7 +61,7 @@ public class ParsingService {
                         || marketGroups.get(value.getMarketGroupID()).getParentGroupID() == 54
                         || value.getMarketGroupID() == 1856
                         || value.getMarketGroupID() == 1855)
-                        && (key != 60771 && key != 49787 && key != 76373)) {
+                        && (key != 60771 && key != 49787 && key != 76373 && !value.getName().getEn().contains("Batch"))) {
                     rawResources.put(key, value);
                 }
             }
