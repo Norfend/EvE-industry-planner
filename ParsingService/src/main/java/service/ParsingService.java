@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
  *   <li>Nesosilicate Rakovene: 76373</li>
  *   <li>Neo-Jadarite: 76374</li>
  *   <li>Chromodynamic Tricarboxyls: 48927</li>
+ *   <li>Hedbergite ( copy ): 82015</li>
  *   <li>Ores with "Batch" in the name</li>
  * </ul>*/
 public class ParsingService {
@@ -61,7 +62,8 @@ public class ParsingService {
                         || marketGroups.get(value.getMarketGroupID()).getParentGroupID() == 54
                         || value.getMarketGroupID() == 1856
                         || value.getMarketGroupID() == 1855)
-                        && (key != 60771 && key != 49787 && key != 76373 && !value.getName().getEn().contains("Batch"))) {
+                        && (key != 60771 && key != 49787 && key != 76373 && key != 82015
+                            && !value.getName().getEn().contains("Batch"))) {
                     rawResources.put(key, value);
                 }
             }
