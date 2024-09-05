@@ -1,5 +1,6 @@
 package RefineryService.service;
 
+import RefineryService.model.CharacterInfo;
 import RefineryService.model.RawResources;
 import RefineryService.model.ReprocessingBlueprint;
 import RefineryService.repository.RawResourcesRepository;
@@ -28,10 +29,11 @@ public class RefineryCalculator {
      * Calculates the output materials after processing the input raw resources based on reprocessing blueprints.
      *
      * @param inputLines A string containing the input lines to be parsed and processed.
+     * @param character A CharacterInfo used to get information about the character's skills
      * @return A list of strings representing the output materials and their corresponding quantities.
-     *         If the input raw resource doesn't match any blueprint, it is skipped in the calculation.
+     *         If the input raw resource does not match any blueprint, it is skipped in the calculation.
      */
-    public List<String> calculator(String inputLines) {
+    public List<String> calculator(String inputLines, CharacterInfo character) {
         List<Line> lines = inputLinesParser(inputLines);
         List<String> outputList = new LinkedList<>();
         Map<String, Integer> materials = new HashMap<>();
@@ -44,7 +46,9 @@ public class RefineryCalculator {
                                             .orElseThrow();
                 for (ReprocessingBlueprint blueprint: reprocessingList) {
                     String materialName = blueprint.getMaterialAfterReprocessingId().getMaterialsAfterReprocessingName();
-                    double inputMaterialValue = blueprint.getQuantity() * numberOfPortions * getReprocessingRatio(materialName);
+                    String rawResourceRefinerySkill = resource.get().getRawResourceRefinerySkill();
+                    double inputMaterialValue = blueprint.getQuantity() * numberOfPortions *
+                                                getReprocessingRatio(rawResourceRefinerySkill, character);
                     if (materials.putIfAbsent(materialName, (int) inputMaterialValue) != null) {
                         materials.put(materialName, (int) inputMaterialValue + materials.get(materialName));
                     }
@@ -81,12 +85,28 @@ public class RefineryCalculator {
         return outputLines;
     }
 
-    private double getReprocessingRatio(String inputString) {
+    private double getReprocessingRatio(String inputString, CharacterInfo character) {
         double baseYield = 0.5;
-        double characterYield = (1 + Constants.REPROCESSING_SKILL.getValue() * 0.03) *
-                                (1 + Constants.REPROCESSING_EFFICIENCY_SKILL.getValue() * 0.02) *
-                                (1 + Constants.ORE_PROCESSING_SKILL.getValue() * 0.02) *
-                                (1 + Constants.PROCESSING_IMPLANT.getValue());
+        int oreProcessingSkill;
+        switch (inputString) {
+            case "Abyssal Ore" -> oreProcessingSkill = character.abyssalOreProcessingSkill();
+            case "Coherent Ore" -> oreProcessingSkill = character.coherentOreProcessingSkill();
+            case "Common Moon Ore" -> oreProcessingSkill = character.commonMoonOreProcessingSkill();
+            case "Complex Ore" -> oreProcessingSkill = character.complexOreProcessingSkill();
+            case "Exceptional Moon Ore" -> oreProcessingSkill = character.exceptionalMoonOreProcessingSkill();
+            case "Ice Ore" -> oreProcessingSkill = character.iceOreProcessingSkill();
+            case "Mercoxit" -> oreProcessingSkill = character.mercoxitOreProcessingSkill();
+            case "Rare Moon Ore" -> oreProcessingSkill = character.rareMoonOreProcessingSkill();
+            case "Simple Ore" -> oreProcessingSkill = character.simpleOreProcessingSkill();
+            case "Ubiquitous Moon Ore" -> oreProcessingSkill = character.ubiquitousMoonOreProcessingSkill();
+            case "Uncommon Moon Ore" -> oreProcessingSkill = character.uncommonMoonOreProcessingSkill();
+            case "Variegated Moon Ore" -> oreProcessingSkill = character.variegatedOreProcessingSkill();
+            default -> oreProcessingSkill = 0;
+        }
+        double characterYield = (1 + character.reprocessingSkill() * 0.03) *
+                                (1 + character.reprocessingEfficiencySkill() * 0.02) *
+                                (1 + oreProcessingSkill * 0.02) *
+                                (1 + character.reprocessingImplant());
         return baseYield * characterYield;
     }
 }
