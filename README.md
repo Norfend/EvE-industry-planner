@@ -7,6 +7,8 @@ The following technologies were used in this project:
 * Hibernate
 * PostgreSQL
 * Maven
+* Lombock
 * Docker
+* JUnit
 * Git
 * IDEA

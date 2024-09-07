@@ -6,7 +6,7 @@
 
     <groupId>Industry.eve</groupId>
     <artifactId>EvE-industry-planner</artifactId>
-    <version>0.2</version>
+    <version>0.3-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
         <module>RefineryService</module>
