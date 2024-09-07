@@ -26,5 +26,8 @@ public class RawResources {
     private String RawResourceName;
 
     @Column(name = "\"raw resource portion size\"", nullable = false)
-    private int RawResourcePortionSize;
+    private int rawResourcePortionSize;
+
+    @Column(name = "\"raw resource refinery skill\"", nullable = false)
+    private String rawResourceRefinerySkill;
 }
