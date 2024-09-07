@@ -1,6 +1,6 @@
 package RefineryService.controller;
 
-import RefineryService.model.CharacterInfo;
+import RefineryService.service.RefineryWrapper;
 import RefineryService.service.RefineryCalculator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +19,8 @@ public class RefineryServiceController {
     }
 
     @GetMapping(path = "/calculator")
-    public ResponseEntity<List<String>> rawResourcesConverter(@RequestBody String inputLines,
-                                                              @RequestHeader(value="characterInfo") CharacterInfo character) {
-        return ResponseEntity.ok().body(refineryCalculator.calculator(inputLines, character));
+    public ResponseEntity<List<String>> rawResourcesConverter(@RequestBody RefineryWrapper refineryWrapper) {
+        return ResponseEntity.ok().body(refineryCalculator.calculator(refineryWrapper.inputResources(),
+                                                                      refineryWrapper.characterInfo()));
     }
 }

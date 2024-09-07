@@ -47,9 +47,9 @@ public class FileParser {
                 int portionSize = entry.getValue().get("portionSize").asInt();
                 String rawResourceRefinerySkill = rawResourceRefinerySkill(rawResourceName);
                 rawResources.add(new RawResources(Long.parseLong(entry.getKey()),
-                                                                 portionSize,
-                                                                 rawResourceName,
                                                                  iconID,
+                                                                 rawResourceName,
+                                                                 portionSize,
                                                                  rawResourceRefinerySkill));
             });
         } catch (Exception e) {

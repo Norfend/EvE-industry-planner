@@ -1,4 +1,4 @@
-package RefineryService.model;
+package RefineryService.service;
 
 public record CharacterInfo(int reprocessingSkill, int reprocessingEfficiencySkill, int abyssalOreProcessingSkill,
                         int coherentOreProcessingSkill, int commonMoonOreProcessingSkill, int complexOreProcessingSkill,
