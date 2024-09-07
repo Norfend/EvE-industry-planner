@@ -1,18 +1,21 @@
 package SettingsService.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@NoArgsConstructor
+@Getter
+@Setter
 @Entity
 @Table(name = "\"reprocessing blueprint\"")
 public class ReprocessingBlueprint {
-    public ReprocessingBlueprint() {
-    }
-
     public ReprocessingBlueprint(RawResources rawResourceId,
                                  MaterialsAfterReprocessing materialAfterReprocessingId,
                                  int quantity) {
         this.rawResourceId = rawResourceId;
-        MaterialAfterReprocessingId = materialAfterReprocessingId;
+        this.materialAfterReprocessingId = materialAfterReprocessingId;
         this.quantity = quantity;
     }
 
@@ -25,7 +28,7 @@ public class ReprocessingBlueprint {
             strategy = GenerationType.SEQUENCE,
             generator = "\"reprocessing blueprint id sequence\""
     )
-    private Long ReprocessingBlueprintId;
+    private Long reprocessingBlueprintId;
 
     @ManyToOne
     @JoinColumn(
@@ -39,40 +42,8 @@ public class ReprocessingBlueprint {
             name = "\"materials after reprocessing id\"",
             nullable = false,
             foreignKey = @ForeignKey(name = "\"materials after reprocessing FK\""))
-    private MaterialsAfterReprocessing MaterialAfterReprocessingId;
+    private MaterialsAfterReprocessing materialAfterReprocessingId;
 
     @Column(nullable = false)
     private int quantity;
-
-    public Long getReprocessingBlueprintId() {
-        return ReprocessingBlueprintId;
-    }
-
-    public void setReprocessingBlueprintId(Long reprocessingBlueprintId) {
-        ReprocessingBlueprintId = reprocessingBlueprintId;
-    }
-
-    public RawResources getRawResourceId() {
-        return rawResourceId;
-    }
-
-    public void setRawResourceId(RawResources rawResourceId) {
-        this.rawResourceId = rawResourceId;
-    }
-
-    public MaterialsAfterReprocessing getMaterialAfterReprocessingId() {
-        return MaterialAfterReprocessingId;
-    }
-
-    public void setMaterialAfterReprocessingId(MaterialsAfterReprocessing materialAfterReprocessingId) {
-        MaterialAfterReprocessingId = materialAfterReprocessingId;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
 }

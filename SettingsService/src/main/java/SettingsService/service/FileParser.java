@@ -12,9 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class FileParser {
@@ -47,7 +45,12 @@ public class FileParser {
                 JsonNode name = entry.getValue().get("name");
                 String rawResourceName = name.get("en").asText();
                 int portionSize = entry.getValue().get("portionSize").asInt();
-                rawResources.add(new RawResources(portionSize, rawResourceName, iconID, Long.parseLong(entry.getKey())));
+                String rawResourceRefinerySkill = rawResourceRefinerySkill(rawResourceName);
+                rawResources.add(new RawResources(Long.parseLong(entry.getKey()),
+                                                                 iconID,
+                                                                 rawResourceName,
+                                                                 portionSize,
+                                                                 rawResourceRefinerySkill));
             });
         } catch (Exception e) {
             System.err.println(e.getMessage());
@@ -109,5 +112,47 @@ public class FileParser {
             System.err.println(e.getMessage());
         }
         return reprocessingBlueprintRepository.saveAll(reprocessingBlueprints);
+    }
+
+    /**
+     * Determines the refinery skill category for a given raw resource name based on predefined ore groups.
+     *
+     * @param rawResourceName The name of the raw resource to classify.
+     * @return A string representing the refinery skill category for the raw resource.
+     *         If the resource does not match any known category, "Unknown" is returned.
+     */
+    @SuppressWarnings("SpellCheckingInspection")
+    private String rawResourceRefinerySkill(String rawResourceName) {
+        ArrayList<String> abyssalOre = new ArrayList<>(Arrays.asList("Bezdnacine", "Rakovene", "Talassonite"));
+        ArrayList<String> coherentOre = new ArrayList<>(Arrays.asList("Hedbergite", "Hemorphite", "Jaspet", "Kernite",
+                                                                      "Omber", "Ytirium", "Griemeer", "Nocxite"));
+        ArrayList<String> commonMoonOre = new ArrayList<>(Arrays.asList("Cobaltite", "Euxenite", "Titanite", "Scheelite"));
+        ArrayList<String> complexOre = new ArrayList<>(Arrays.asList("Arkonor", "Bistot", "Spodumain", "Eifyrium",
+                                                                     "Ducinium", "Hezorime", "Ueganite"));
+        ArrayList<String> exceptionalMoonOre = new ArrayList<>(Arrays.asList("Xenotime", "Monazite", "Loparite",
+                                                                             "Ytterbite"));
+        ArrayList<String> iceOre = new ArrayList<>(Arrays.asList("Blue Ice", "Clear Icicle", "Dark Glitter",
+                                                                 "Enriched Clear Icicle", "Gelidus", "Glacial Mass",
+                                                                 "Glare Crust", "Krystallos", "Pristine White Glaze",
+                                                                 "Smooth Glacial Mass", "Thick Blue Ice", "White Glaze"));
+        ArrayList<String> mercoxitOre = new ArrayList<>(List.of("Mercoxit"));
+        ArrayList<String> rareMoonOre = new ArrayList<>(Arrays.asList("Carnotite", "Zircon", "Pollucite", "Cinnabar"));
+        ArrayList<String> simpleOre = new ArrayList<>(Arrays.asList("Plagioclase", "Pyroxeres", "Scordite", "Veldspar",
+                                                                    "Mordunium"));
+        ArrayList<String> ubiquitousMoonOre = new ArrayList<>(Arrays.asList("Zeolites", "Sylvite", "Bitumens", "Coesite"));
+        ArrayList<String> uncommonMoonOre = new ArrayList<>(Arrays.asList("Otavite", "Sperrylite", "Vanadinite", "Chromite"));
+        ArrayList<String> variegatedOre = new ArrayList<>(Arrays.asList("Crokite", "Ochre", "Gneiss", "Kylixium"));
+        Map<ArrayList<String>, String> ores = new HashMap<>();
+        ores.put(abyssalOre, "Abyssal Ore"); ores.put(coherentOre, "Coherent Ore");
+        ores.put(commonMoonOre, "Common Moon Ore"); ores.put(complexOre, "Complex Ore");
+        ores.put(exceptionalMoonOre, "Exceptional Moon Ore"); ores.put(iceOre, "Ice Ore");
+        ores.put(mercoxitOre, "Mercoxit"); ores.put(rareMoonOre, "Rare Moon Ore"); ores.put(simpleOre, "Simple Ore");
+        ores.put(ubiquitousMoonOre, "Ubiquitous Moon Ore"); ores.put(uncommonMoonOre, "Uncommon Moon Ore");
+        ores.put(variegatedOre, "Variegated Moon Ore");
+        return ores.entrySet().stream()
+                .filter(entry -> entry.getKey().stream().anyMatch(rawResourceName::contains))
+                .map(Map.Entry::getValue)
+                .findFirst()
+                .orElse("Unknown");
     }
 }
