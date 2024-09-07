@@ -1,7 +1,15 @@
 package parsingmodel;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Type {
     private int iconID;
@@ -10,54 +18,6 @@ public class Type {
     private int portionSize;
     private boolean published;
     private double volume;
-
-    public int getIconID() {
-        return iconID;
-    }
-
-    public void setIconID(int iconID) {
-        this.iconID = iconID;
-    }
-
-    public int getMarketGroupID() {
-        return marketGroupID;
-    }
-
-    public void setMarketGroupID(int marketGroupID) {
-        this.marketGroupID = marketGroupID;
-    }
-
-    public Name getName() {
-        return name;
-    }
-
-    public void setName(Name name) {
-        this.name = name;
-    }
-
-    public int getPortionSize() {
-        return portionSize;
-    }
-
-    public void setPortionSize(int portionSize) {
-        this.portionSize = portionSize;
-    }
-
-    public boolean isPublished() {
-        return published;
-    }
-
-    public void setPublished(boolean published) {
-        this.published = published;
-    }
-
-    public double getVolume() {
-        return volume;
-    }
-
-    public void setVolume(double volume) {
-        this.volume = volume;
-    }
 
     @Override
     public final boolean equals(Object o) {
@@ -80,7 +40,7 @@ public class Type {
 
     @Override
     public String toString() {
-        return  "iconID " + iconID +
+        return  "iconID = " + iconID +
                 ", marketGroupID = " + marketGroupID +
                 ", name = " + name +
                 ", portionSize = " + portionSize +

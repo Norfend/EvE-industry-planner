@@ -2,18 +2,32 @@ package parsingmodel;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Name {
     @JsonProperty("en")
     private String en;
 
-    public String getEn() {
-        return en;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Name name = (Name) o;
+        return en.equals(name.en);
     }
 
-    public void setEn(String en) {
-        this.en = en;
+    @Override
+    public int hashCode() {
+        return en.hashCode();
     }
 
     @Override
