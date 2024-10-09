@@ -1,6 +1,6 @@
 package industry.eve.controller;
 
-import industry.eve.service.RefineryWrapper;
+import industry.eve.service.RefineryCalculatorInputWrapper;
 import industry.eve.service.RefineryCalculator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +19,9 @@ public class RefineryServiceController {
     }
 
     @GetMapping(path = "/calculator")
-    public ResponseEntity<List<String>> rawResourcesConverter(@RequestBody RefineryWrapper refineryWrapper) {
-        return ResponseEntity.ok().body(refineryCalculator.calculator(refineryWrapper.inputResources(),
-                                                                      refineryWrapper.characterInfo()));
+    public ResponseEntity<List<String>> rawResourcesConverter(@RequestBody RefineryCalculatorInputWrapper inputWrapper) {
+        return ResponseEntity.ok().body(refineryCalculator.calculator(inputWrapper.inputResources(),
+                                                                      inputWrapper.characterInfo(),
+                                                                      inputWrapper.baseYieldInfo()));
     }
 }

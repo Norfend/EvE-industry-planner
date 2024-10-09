@@ -23,7 +23,7 @@ public class RefineryCalculator {
      * @return A list of strings representing the output materials and their corresponding quantities.
      *         If the input raw resource does not match any blueprint, it is skipped in the calculation.
      */
-    public List<String> calculator(List<ResourcesLine> inputLines, CharacterInfo character) {
+    public List<String> calculator(List<ResourcesLine> inputLines, CharacterInfo character, BaseYieldInfo baseYieldInfo) {
         List<String> outputList = new LinkedList<>();
         Map<String, Integer> materials = new HashMap<>();
         for (ResourcesLine line : inputLines) {
@@ -37,7 +37,7 @@ public class RefineryCalculator {
                     String materialName = blueprint.getMaterialAfterReprocessingId().getMaterialsAfterReprocessingName();
                     String rawResourceRefinerySkill = resource.get().getRawResourceRefinerySkill();
                     double inputMaterialValue = blueprint.getQuantity() * numberOfPortions *
-                                                getReprocessingRatio(rawResourceRefinerySkill, character);
+                                                getReprocessingRatio(rawResourceRefinerySkill, character, baseYieldInfo);
                     if (materials.putIfAbsent(materialName, (int) inputMaterialValue) != null) {
                         materials.put(materialName, (int) inputMaterialValue + materials.get(materialName));
                     }
@@ -50,8 +50,9 @@ public class RefineryCalculator {
         return outputList;
     }
 
-    private double getReprocessingRatio(String inputString, CharacterInfo character) {
-        double baseYield = 0.5;
+    private double getReprocessingRatio(String inputString, CharacterInfo character, BaseYieldInfo baseYieldInfo) {
+        double baseYield = (50 + baseYieldInfo.rigModifier())*(1 + baseYieldInfo.securityModifier())*
+                           (1 + baseYieldInfo.structureModifier());
         int oreProcessingSkill;
         switch (inputString) {
             case "Abyssal Ore" -> oreProcessingSkill = character.abyssalOreProcessingSkill();
