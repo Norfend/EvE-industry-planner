@@ -1,7 +1,9 @@
 package industry.eve.service;
 
+import industry.eve.model.MaterialsAfterReprocessing;
 import industry.eve.model.RawResources;
 import industry.eve.model.ReprocessingBlueprint;
+import industry.eve.repository.MaterialsAfterReprocessingRepository;
 import industry.eve.repository.RawResourcesRepository;
 import industry.eve.repository.ReprocessingBlueprintRepository;
 import lombok.AllArgsConstructor;
@@ -12,6 +14,7 @@ import java.util.*;
 @Service
 @AllArgsConstructor
 public class RefineryCalculator {
+    private final MaterialsAfterReprocessingRepository mARRepository;
     private final RawResourcesRepository rawResourcesRepository;
     private final ReprocessingBlueprintRepository reprocessingBlueprintRepository;
 
@@ -20,6 +23,7 @@ public class RefineryCalculator {
      *
      * @param inputLines A List<ResourcesLine> containing the input lines to be processed.
      * @param character A CharacterInfo used to get information about the character's skills
+     * @param baseYieldInfo A BaseYieldInfo used to get information about the structure, where a process will perform
      * @return A list of strings representing the output materials and their corresponding quantities.
      *         If the input raw resource does not match any blueprint, it is skipped in the calculation.
      */
@@ -46,6 +50,18 @@ public class RefineryCalculator {
         }
         for (String material : materials.keySet()) {
             outputList.add(material + " " + materials.get(material));
+        }
+        return outputList;
+    }
+
+    public List<String> reverseCalculator(List<ResourcesLine> inputLines, CharacterInfo character,
+                                          BaseYieldInfo baseYieldInfo) {
+        List<String> outputList = new LinkedList<>();
+        for (ResourcesLine line : inputLines) {
+            Optional<MaterialsAfterReprocessing> material = mARRepository.findByMaterialsAfterReprocessingName(line.item());
+            if (material.isPresent()) {
+                System.out.println();
+            }
         }
         return outputList;
     }

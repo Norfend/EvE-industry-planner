@@ -24,4 +24,11 @@ public class RefineryServiceController {
                                                                       inputWrapper.characterInfo(),
                                                                       inputWrapper.baseYieldInfo()));
     }
+
+    @GetMapping(path = "/reverse-calculator")
+    public ResponseEntity<List<String>> reverseRefineryCalculator(@RequestBody RefineryCalculatorInputWrapper inputWrapper) {
+        return ResponseEntity.ok().body(refineryCalculator.reverseCalculator(inputWrapper.inputResources(),
+                                                                             inputWrapper.characterInfo(),
+                                                                             inputWrapper.baseYieldInfo()));
+    }
 }
